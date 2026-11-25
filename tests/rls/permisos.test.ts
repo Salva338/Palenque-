@@ -285,3 +285,13 @@ describe("organización nueva", () => {
     expect(ajustes).toEqual([{ load_chukkers_14d: 4 }]);
   });
 });
+
+describe("sin sesión no se ve nada", () => {
+  it("un visitante anónimo no puede leer caballos ni eventos", async () => {
+    const anonimo = createClient(url, publishable, sinSesion);
+    for (const tabla of ["horses", "events", "event_costs", "organizations"]) {
+      const { data } = await anonimo.from(tabla).select("*").limit(1);
+      expect(data ?? [], `tabla ${tabla}`).toEqual([]);
+    }
+  });
+});
