@@ -1,0 +1,81 @@
+# Palenque · Integración continua (sección 14.11 de la especificación)
+# En cada cambio que llega a main:
+#   1. verifica tipos, estilo y pruebas unitarias;
+#   2. aplica las migraciones al proyecto de PRUEBAS (palenque-test) y corre las pruebas de permisos;
+#   3. solo si todo pasó, aplica las migraciones al proyecto REAL (palenque).
+# Las llaves vienen de los secretos del repo y nunca se imprimen.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-main
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  SUPABASE_CLI_VERSION: 3.4.0
+  TEST_REF: blfqfgkayepnmujgkmzm   # palenque-test (Oregon) — no es secreto
+  PROD_REF: vhtaofnrxhbhwjsmjguv   # palenque (São Paulo) — no es secreto
+
+jobs:
+  verificar:
+    name: Tipos, estilo y pruebas unitarias
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run verify:quick
+
+  base-de-pruebas:
+    name: Migraciones y permisos en palenque-test
+    needs: verificar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v1
+        with:
+          version: ${{ env.SUPABASE_CLI_VERSION }}
+      - name: Aplicar migraciones a palenque-test
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD_TEST }}
+        run: supabase db push --remote="$TEST_REF" --password "$SUPABASE_DB_PASSWORD" --yes
+      - name: Pruebas de permisos (RLS)
+        env:
+          APP_ENV: test
+          TEST_SUPABASE_PROJECT_REF: ${{ env.TEST_REF }}
+          NEXT_PUBLIC_SUPABASE_URL: https://${{ env.TEST_REF }}.supabase.co
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.TEST_SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_SECRET_KEY: ${{ secrets.TEST_SUPABASE_SECRET_KEY }}
+        run: npm run test:rls
+
+  base-real:
+    name: Migraciones en palenque (real)
+    needs: base-de-pruebas
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: ${{ env.SUPABASE_CLI_VERSION }}
+      - name: Aplicar migraciones a palenque
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: supabase db push --remote="$PROD_REF" --password "$SUPABASE_DB_PASSWORD" --yes
