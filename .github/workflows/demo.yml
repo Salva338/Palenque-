@@ -1,0 +1,38 @@
+# Palenque · Cargar los datos de demostración ("Haras Demo") en la base real.
+# Corre solo cuando cambia supabase/seed/, después de que el CI aplicó las migraciones.
+# El script solo toca la organización "Haras Demo" y es repetible.
+name: Cargar demo
+
+on:
+  push:
+    branches: [main]
+    paths: ["supabase/seed/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-main
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  PROD_REF: vhtaofnrxhbhwjsmjguv
+  PROD_POOLER_HOST: aws-0-sa-east-1.pooler.supabase.com
+
+jobs:
+  demo:
+    name: Haras Demo en palenque
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Correr supabase/seed/demo.sql
+        env:
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          PASS=$(python3 -c 'import os,urllib.parse;print(urllib.parse.quote(os.environ["SUPABASE_DB_PASSWORD"],safe=""))')
+          echo "::add-mask::$PASS"
+          psql "postgresql://postgres.${PROD_REF}:${PASS}@${PROD_POOLER_HOST}:5432/postgres?sslmode=require" \
+            -v ON_ERROR_STOP=1 -f supabase/seed/demo.sql
+          psql "postgresql://postgres.${PROD_REF}:${PASS}@${PROD_POOLER_HOST}:5432/postgres?sslmode=require" -At -c \
+            "select 'Caballos en Haras Demo: ' || count(*) from public.horses h join public.organizations o on o.id = h.org_id where o.name = 'Haras Demo';"

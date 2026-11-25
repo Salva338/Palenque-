@@ -1,5 +1,6 @@
 -- Palenque · Datos de demostración "Haras Demo"
--- Pegalo en Supabase → SQL Editor → New query → Run (proyecto palenque).
+-- Lo corre solo GitHub Actions (workflow "Cargar demo") cada vez que cambia este archivo.
+-- También se puede pegar en Supabase → SQL Editor → New query → Run (proyecto palenque).
 -- 1) Cambiá el email de abajo por el del usuario que creaste en Authentication → Users.
 -- 2) Es repetible: si "Haras Demo" ya existe, lo borra y lo vuelve a crear. No toca nada más.
 
@@ -20,6 +21,18 @@ begin
 
   insert into public.memberships (user_id, org_id, role, display_name)
   values (_user, _org, 'dueno', _nombre);
+
+  -- Usuarios de prueba por rol: si existen en Authentication → Users con estos emails,
+  -- se suman a Haras Demo con su rol. Si no existen, se saltean sin error.
+  insert into public.memberships (user_id, org_id, role, display_name)
+  select u.id, _org, r.rol::public.member_role, r.nombre
+    from (values
+      ('byronzar22+encargado@gmail.com', 'encargado', 'Encargado demo'),
+      ('byronzar22+petisero@gmail.com',  'petisero',  'Juan'),
+      ('byronzar22+vet@gmail.com',       'vet',       'Dra. Paula'),
+      ('byronzar22+herrero@gmail.com',   'herrero',   'Martín')
+    ) as r(email, rol, nombre)
+    join auth.users u on lower(u.email) = r.email;
 
   insert into public.horses (org_id, number, name, sex, coat, birth_date, birth_place, sire_name, dam_name, registry_code, breeder, status, location)
   select _org, v.number, v.name, v.sex, v.coat, v.birth_date, v.birth_place, v.sire_name, v.dam_name,
