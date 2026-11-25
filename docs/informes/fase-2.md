@@ -33,7 +33,7 @@ Todavía no existe `npm run verify` completo. Las capas de base de datos, webhoo
 
 ## No probado y riesgos conocidos
 - Plan Hobby de Vercel: es solo para uso no comercial. Antes del piloto hay que pasar a Pro (Fase 8).
-- El repo es de Salva y los cambios los sube la cuenta de Byron. Si Vercel Hobby bloquea despliegues de autores que no son dueños de la cuenta, va a haber que revisarlo.
+- El repo es de Salva y los cambios los sube la cuenta de Byron. Vercel Hobby bloqueó un despliegue ("Cierre de la Fase 2") porque el autor no era el dueño de la cuenta. Se resolvió haciendo **público** el repo, por decisión de Byron y Salva; el siguiente despliegue salió "Listo" en 13 segundos. Consecuencia: el código y la documentación se pueden ver públicamente. Las llaves nunca van al repo (se revisó el historial: cero llaves).
 - La región de las funciones (São Paulo, `gru1`) todavía no se configuró. Hace falta recién cuando haya funciones de servidor (Fase 3 en adelante).
 
 ## Cómo lo probó la persona en el celular
