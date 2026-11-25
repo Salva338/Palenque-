@@ -1,0 +1,56 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/fraunces";
+
+/* Identidad visual de Palenque, tomada del <style> del prototipo */
+:root {
+  --bg: #f4efe4;
+  --card: #fffdf8;
+  --ink: #1c2620;
+  --muted: #6c746a;
+  --green: #1f4030;
+  --green2: #2e5a43;
+  --brass: #b08a3e;
+  --line: #e4dccb;
+  --red: #b4412f;
+  --amber: #c08419;
+  --ok: #3d7a52;
+  --wa: #0b8f6a;
+  --frame: #e9e2d2;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-green: var(--green);
+  --color-green2: var(--green2);
+  --color-brass: var(--brass);
+  --color-line: var(--line);
+  --color-red: var(--red);
+  --color-amber: var(--amber);
+  --color-ok: var(--ok);
+  --color-wa: var(--wa);
+  --color-frame: var(--frame);
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-serif: "Fraunces Variable", Georgia, serif;
+}
+
+html,
+body {
+  background: var(--frame);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
