@@ -9,9 +9,19 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { assertTestEnvironment } from "@/lib/test/assert-test-env";
 
 const { url } = assertTestEnvironment();
-const publishable = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
-const secret = process.env.SUPABASE_SECRET_KEY!;
+// trim(): al pegar una llave en GitHub es fácil que se cuele un espacio o un salto de línea,
+// y eso rompe el encabezado HTTP ("invalid header value").
+const publishable = (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "").trim();
+const secret = (process.env.SUPABASE_SECRET_KEY ?? "").trim();
 if (!publishable || !secret) throw new Error("Faltan las llaves del proyecto de pruebas.");
+for (const [nombre, valor, prefijo] of [
+  ["TEST_SUPABASE_PUBLISHABLE_KEY", publishable, "sb_publishable_"],
+  ["TEST_SUPABASE_SECRET_KEY", secret, "sb_secret_"],
+] as const) {
+  if (!valor.startsWith(prefijo) || /\s/.test(valor)) {
+    throw new Error(`El secreto ${nombre} no tiene el formato esperado (tiene que empezar con ${prefijo} y no tener espacios).`);
+  }
+}
 
 const sinSesion = { auth: { persistSession: false, autoRefreshToken: false } };
 const admin = createClient(url, secret, sinSesion);
