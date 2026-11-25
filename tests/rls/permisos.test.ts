@@ -53,6 +53,12 @@ async function crearUsuario(etiqueta: string): Promise<{ id: string; cliente: Su
   return { id: data.user.id, cliente };
 }
 
+/** Para escrituras que no piden datos de vuelta: solo verifica que no haya error. */
+async function hecho(p: PromiseLike<{ error: { message: string } | null }>): Promise<void> {
+  const { error } = await p;
+  if (error) throw new Error(error.message);
+}
+
 async function ok<T>(p: PromiseLike<{ data: T; error: { message: string } | null }>): Promise<NonNullable<T>> {
   const { data, error } = await p;
   if (error) throw new Error(error.message);
@@ -71,12 +77,12 @@ beforeAll(async () => {
     const u = await crearUsuario(rol);
     ids[rol] = u.id;
     clientes[rol] = u.cliente;
-    await ok(admin.from("memberships").insert({ user_id: u.id, org_id: orgA, role: rol, display_name: rol }));
+    await hecho(admin.from("memberships").insert({ user_id: u.id, org_id: orgA, role: rol, display_name: rol }));
   }
   const ajeno = await crearUsuario("ajeno");
   ids.ajeno = ajeno.id;
   clientes.ajeno = ajeno.cliente;
-  await ok(admin.from("memberships").insert({ user_id: ajeno.id, org_id: orgB, role: "dueno", display_name: "ajeno" }));
+  await hecho(admin.from("memberships").insert({ user_id: ajeno.id, org_id: orgB, role: "dueno", display_name: "ajeno" }));
 
   const [hA] = await ok(
     admin.from("horses").insert({ org_id: orgA, number: 4, name: "Tango", sex: "yegua" }).select("id"),
@@ -94,11 +100,11 @@ beforeAll(async () => {
       .select("id"),
   );
   eventoA = ev.id;
-  await ok(admin.from("event_costs").insert({ event_id: eventoA, org_id: orgA, amount: 15000 }));
-  await ok(
+  await hecho(admin.from("event_costs").insert({ event_id: eventoA, org_id: orgA, amount: 15000 }));
+  await hecho(
     admin.from("events").insert({ org_id: orgB, horse_id: caballoB, type: "nota", title: "Privado", occurred_on: "2026-11-20" }),
   );
-  await ok(
+  await hecho(
     admin.from("whatsapp_messages").insert({
       wa_message_id: `wamid.${corrida}`,
       org_id: orgA,
