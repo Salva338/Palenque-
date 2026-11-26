@@ -52,7 +52,7 @@
 - `palenque-test` está en Oregon y en otra organización de Supabase. No afecta, porque solo lo usan las pruebas.
 - El repositorio es **público** (decisión tomada para que Vercel Hobby publique los cambios). Las llaves nunca van al repo; se revisó el historial y no hay ninguna.
 - GitHub avisa que `actions/checkout@v4`, `setup-node@v4` y `setup-cli@v1` corren con Node 20, que está en desuso. Conviene actualizarlas más adelante.
-- La región de las funciones de Vercel (São Paulo) no está confirmada.
+- Región de las funciones de Vercel: São Paulo (gru1), configurada el 26/11.
 - Byron fue invitado como Developer a la organización de Supabase (26/11). Cuando acepte, ya no depende de Salva para el panel.
 
 ## Cómo lo probó la persona en el celular
