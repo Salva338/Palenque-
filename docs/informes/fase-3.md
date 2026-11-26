@@ -48,7 +48,7 @@
 - Con `cacheComponents` de Next 16, lo que depende de la sesión va dentro de `<Suspense>`.
 
 ## No probado y riesgos conocidos
-- **Llaves que se vieron en pantalla compartida y en una reunión grabada:** el token de acceso de Supabase y la Secret key del proyecto real. Byron y Salva decidieron no rotarlas por ahora. **Hay que rotarlas antes de cargar datos de un cliente real** (checklist de la Fase 8).
+- **Llaves que se vieron en pantalla compartida y en una reunión grabada** (token de acceso de Supabase y Secret key del proyecto real): **rotadas el 26/11/2026.** Hay que confirmar que los valores nuevos estén cargados en Vercel y en los secretos de GitHub (ver el CI de la siguiente corrida).
 - `palenque-test` está en Oregon y en otra organización de Supabase. No afecta, porque solo lo usan las pruebas.
 - El repositorio es **público** (decisión tomada para que Vercel Hobby publique los cambios). Las llaves nunca van al repo; se revisó el historial y no hay ninguna.
 - GitHub avisa que `actions/checkout@v4`, `setup-node@v4` y `setup-cli@v1` corren con Node 20, que está en desuso. Conviene actualizarlas más adelante.
