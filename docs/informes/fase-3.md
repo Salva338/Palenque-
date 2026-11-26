@@ -30,7 +30,7 @@
 - 🟢 Tipos, estilo y pruebas unitarias.
 - 🟢 Pruebas de permisos en `palenque-test`: 29 de 29. Cubren las 5 obligatorias de 5.3, RLS en todas las tablas, la matriz de caballos, el visitante anónimo y los valores iniciales de cada organización.
 - 🟢 Prueba humana en el celular, como dueño: Byron entró, vio "Haras Demo", el rol Dueño y 13 caballos.
-- 🟡 Prueba humana como **petisero**: todavía no se hizo. Falta crear `byronzar22+petisero@gmail.com` en Authentication → Users y volver a correr "Cargar demo". La regla está cubierta por las pruebas automáticas, pero la guía pide verlo en el celular.
+- 🟢 Prueba humana como **petisero** (26/11): Byron entró en el celular con `byronzar22+petisero@gmail.com` y vio "¡Hola, Juan!", el rol Petisero, Haras Demo y 13 caballos. Todavía no hay pantalla de costos para mirar en el celular. Que el petisero no vea costos lo comprueban las pruebas automáticas (29/29) y la prueba de la prueba.
 - ⚪ Revisión independiente (fin de la Fase 3): no hecha.
 
 ## Pruebas de las pruebas hechas (14.6)
@@ -53,6 +53,7 @@
 - El repositorio es **público** (decisión tomada para que Vercel Hobby publique los cambios). Las llaves nunca van al repo; se revisó el historial y no hay ninguna.
 - GitHub avisa que `actions/checkout@v4`, `setup-node@v4` y `setup-cli@v1` corren con Node 20, que está en desuso. Conviene actualizarlas más adelante.
 - La región de las funciones de Vercel (São Paulo) no está confirmada.
+- Byron ya es miembro (Developer) de la organización de Supabase. Ya no depende de Salva para el panel.
 
 ## Cómo lo probó la persona en el celular
 - Abrió palenque-rust.vercel.app, entró con su email y contraseña y vio "¡Hola, Byron!", Haras Demo, el rol Dueño y "Caballos cargados: 13".
