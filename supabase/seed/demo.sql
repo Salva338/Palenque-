@@ -2,7 +2,7 @@
 -- Lo corre solo GitHub Actions (workflow "Cargar demo") cada vez que cambia este archivo.
 -- También se puede pegar en Supabase → SQL Editor → New query → Run (proyecto palenque).
 -- 1) Cambiá el email de abajo por el del usuario que creaste en Authentication → Users.
--- 2) Es repetible: si "Haras Demo" ya existe, lo borra y lo vuelve a crear. No toca nada más.
+-- 2) Es repetible (última corrida: 26/11, alta del petisero de prueba): si "Haras Demo" ya existe, lo borra y lo vuelve a crear. No toca nada más.
 
 do $$
 declare
